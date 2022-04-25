@@ -302,6 +302,7 @@ typedef struct {
     uint8_t msgnum;                             ///< Last msgnum sent
     uint8_t lock;                               ///< Lock, to prevent sending further messages, when waiting for ack (reply)
     uint32_t resend_timer;
+    void* client;								///< Some reference to the used client
 }
 isn_message_t;
 
@@ -317,8 +318,9 @@ extern isn_message_t *isn_msg_self;
  * \param messages a pointer to application table of messages
  * \param size of the table, which is equalt to number of messages in a table
  * \param parent object
+ * \param reference to the used client will be stored inside the opj itself
  */
-void isn_msg_init(isn_message_t *obj, isn_msg_table_t* messages, uint8_t size, isn_layer_t* parent);
+void isn_msg_init(isn_message_t *obj, isn_msg_table_t* messages, uint8_t size, isn_layer_t* parent, void* client);
 
 /** Schedule received callbacks and send those marked by isn_msg_send() or isn_msg_sendby()
  *
