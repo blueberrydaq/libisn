@@ -331,15 +331,14 @@ isn_receiver_t;
 /**
  * Callback event handler
  */
-typedef void* (* isn_events_handler_t)(const void* arg);
+typedef void* (* isn_events_handler_t)(void* client, const void* arg);
 
 /**\} */
 
 /* Helpers */
-#ifdef ARRAY_SIZE
-# error "ARRAY_SIZE already defined"
-#endif
+#ifndef ARRAY_SIZE
 #define ARRAY_SIZE(x)   (sizeof (x) / sizeof (*x))
+#endif
 #define LAMBDA(c_)      ({ c_ _;})
 
 #if !defined(assert2)

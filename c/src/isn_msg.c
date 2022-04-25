@@ -111,13 +111,13 @@ static int isn_msg_sendnext(isn_message_t *obj) {
                 if (picked->handler) {
                     obj->handler_msgnum = obj->msgnum;
                     if (obj->msgnum == obj->isn_msg_received_msgnum) {
-                        data = picked->handler(obj->handler_input = (const void*)obj->isn_msg_received_data);
+                        data = picked->handler(obj->client, obj->handler_input = (const void*)obj->isn_msg_received_data);
                         obj->isn_msg_received_msgnum = 0xFF;
                         obj->isn_msg_received_data   = NULL;     // free receive buffer
                         obj->handler_input           = NULL;
                     }
                     else {
-                        data = (uint8_t *)picked->handler(NULL);
+                        data = (uint8_t *)picked->handler(obj->client, NULL);
                     }
                     obj->handler_msgnum = -1;
                     if (data == NULL) {
@@ -289,7 +289,7 @@ static void sanity_check(isn_message_t *obj) {
     }
 }
 
-void isn_msg_init(isn_message_t *obj, isn_msg_table_t* messages, uint8_t size, isn_layer_t* parent) {
+void isn_msg_init(isn_message_t *obj, isn_msg_table_t* messages, uint8_t size, isn_layer_t* parent, void* client) {
     memset(&obj->drv, 0, sizeof(obj->drv));
     obj->drv.recv = isn_message_recv;
     obj->parent_driver = parent;
@@ -304,6 +304,7 @@ void isn_msg_init(isn_message_t *obj, isn_msg_table_t* messages, uint8_t size, i
     obj->lock = 0;
     obj->msgnum = 0;
     obj->resend_timer = 0;
+    obj->client = client;
     isn_msg_self = obj;
     sanity_check(obj);
 }
