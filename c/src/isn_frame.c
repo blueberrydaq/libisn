@@ -18,6 +18,7 @@
 
 #include <string.h>
 #include "isn_frame.h"
+#include "isn_clock.h"
 
 /**\{ */
 
@@ -59,7 +60,6 @@ static void isn_frame_free(isn_layer_t *drv, const void *ptr) {
     if (buf) obj->parent->free(obj->parent, buf - 1);
 }
 
-
 static int isn_frame_send(isn_layer_t *drv, void *dest, size_t size) {
     isn_frame_t *obj = (isn_frame_t *)drv;
     uint8_t *buf = dest;
@@ -94,7 +94,7 @@ static size_t isn_frame_recv(isn_layer_t *drv, const void *src, size_t size, isn
     isn_frame_t *obj = (isn_frame_t *)drv;
     const uint8_t *buf = src;
 
-    if ((*(obj->sys_counter) - obj->last_ts) > obj->frame_timeout) {
+    if (isn_clock_elapsed(obj->last_ts) > obj->frame_timeout) {
         obj->state = IS_NONE;
         if (obj->recv_len) {
             obj->drv.stats.rx_dropped++;
